@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 News Insights</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Minimal Navigation -->
+    <nav class="z-depth-0">
+        <div class="nav-wrapper container">
+            <a href="#" class="brand-logo">📰 News Insights</a>
+            <ul class="right">
+                <li>
+                    <button id="refreshBtn" class="btn-floating waves-effect waves-light">
+                        <i class="material-icons">refresh</i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <!-- Loading indicator -->
+        <div id="loading" style="display: none;">
+            <div class="progress">
+                <div class="indeterminate"></div>
+            </div>
+            <p class="center-align loading-text">🔄 Analyzing latest news...</p>
+        </div>
+
+        <!-- Content -->
+        <div id="content">
+            <!-- Metadata Section -->
+            <div class="metadata-section">
+                <div class="metadata-info">
+                    <span class="timestamp">🕒 Last updated: {{ data.metadata.generated_at|datetime }}</span>
+                    <span class="sources">📊 {{ data.metadata.sources_analyzed }} sources analyzed</span>
+                    {% if data.metadata.feed_sources %}
+                    <span class="feed-stats">
+                        ({{ data.metadata.feed_sources.success_rate }} success rate, 
+                        {{ data.metadata.feed_sources.successful }} of {{ data.metadata.feed_sources.total_attempted }} feeds)
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if data.message %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-emoji">📭</div>
+                <p>{{ data.message }}</p>
+            </div>
+            {% endif %}
+
+            {% if data.categorized_summary %}
+            <!-- News List -->
+            <div class="news-list">
+                {% for category, items in data.categorized_summary.items() %}
+                <div class="category-section">
+                    <h2 class="category-header">
+                        <span class="category-icon">
+                            {% if category == "Technology" %}🔧
+                            {% elif category == "Business" %}💼
+                            {% elif category == "Politics" %}🏛️
+                            {% elif category == "Science" %}🔬
+                            {% elif category == "Health" %}🏥
+                            {% elif category == "Entertainment" %}🎭
+                            {% elif category == "Sports" %}⚽
+                            {% elif category == "World News" %}🌍
+                            {% else %}📰
+                            {% endif %}
+                        </span>
+                        {{ category }}
+                        <span class="article-count">({{ items|length }})</span>
+                    </h2>
+                    
+                    {% for item in items %}
+                    <article class="news-item">
+                        <div class="news-number">📍</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <div class="title-date-container">
+                                    <a href="{{ item.link }}" target="_blank" class="news-title">
+                                        {{ item.title }}
+                                        <span class="link-emoji">🔗</span>
+                                    </a>
+                                    {% if item.published %}
+                                    <span class="news-date-inline">• {{ item.published|datetime }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="news-summary">{{ item.summary }}</p>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+            const btn = this;
+
+            loading.style.display = 'block';
+            content.style.opacity = '0.5';
+            btn.disabled = true;
+
+            fetch('/refresh', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    M.toast({html: 'Error: ' + data.error, classes: 'error-toast'});
+                }
+            })
+            .catch(error => {
+                M.toast({html: 'Error refreshing feeds', classes: 'error-toast'});
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                loading.style.display = 'none';
+                content.style.opacity = '1';
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

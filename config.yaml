@@ -1,0 +1,72 @@
+feed_options:
+  max_age_days: 1
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  timeout: 30
+  max_entries_per_feed: 2
+  verify_ssl: true
+  retry_attempts: 3
+  retry_delay: 5
+  cache_expiry: 3600
+  headers:
+    Accept: "application/rss+xml, application/xml, application/atom+xml, application/json, text/xml"
+    Accept-Language: "en-US,en;q=0.9"
+    Accept-Encoding: "gzip, deflate, br"
+
+debug:
+  enabled: true
+  log_feed_content: true
+  log_entry_processing: true
+  save_raw_feeds: false
+  raw_feeds_dir: "debug/raw_feeds"
+
+output_options:
+  directory: "results"
+  filename_format: "rss_feeds_{timestamp}.json"
+  timestamp_format: "%Y%m%d_%H%M%S"
+  indent: 2
+  ensure_ascii: false
+
+entry_fields:
+  - name: title
+    source: title
+    default: "No title"
+    required: true
+  
+  - name: date
+    source: published
+    alternate_source: updated
+    default: "No date"
+    format: "iso"
+    
+  - name: link
+    source: link
+    default: ""
+    validate_url: true
+    
+  - name: description
+    source: summary
+    alternate_source: description
+    default: "No description"
+    max_length: 500
+    strip_html: true
+
+logging:
+  enabled: true
+  level: "DEBUG"
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  file: "logs/rss_fetcher.log"
+  rotate: true
+  max_size: 1048576
+  backup_count: 5
+  console_output: true
+
+error_handling:
+  skip_failed_feeds: true
+  report_errors: true
+  error_format: "{error_type}: {error_message}"
+
+openai:
+  model: "gpt-4o-mini"
+  max_tokens: 16384
+  temperature: 0.7
+

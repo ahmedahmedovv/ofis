@@ -1,0 +1,13 @@
+feedparser
+langdetect
+requests
+pyyaml
+python-dateutil
+humanize
+flask
+openai
+urllib3
+python-dotenv
+deep-translator
+
+# Add any other dependencies your project uses 

@@ -1,0 +1,166 @@
+# Scoring weights (must total to 1.0)
+# IMPORTANT: All weights must add up to exactly 1.0
+# Increase a weight to give that factor more importance in the final score
+weights:
+  recency: 0.30        # How much to value newer articles
+  content_length: 0.20  # How much to value article length
+  keywords: 0.20       # How much to value important keywords
+  source_reliability: 0.30  # How much to value trusted sources
+
+# Recency settings
+# Controls how article age affects scoring
+recency:
+  max_age_hours: 72    # Articles older than this will get reduced scores
+                       # Increase this number to include older articles
+                       # Decrease to focus on very recent news
+  min_score: 0.0       # Minimum score for old articles
+                       # Increase to ensure even old articles get some weight
+
+# Content length settings
+# Controls how article length affects scoring
+content_length:
+  ideal_length: 1000   # Number of characters considered "full length"
+                       # Decrease this if you want shorter articles
+                       # Increase if you prefer longer, detailed articles
+  min_score: 0.0       # Minimum score for very short articles
+                       # Increase to filter out very short articles
+
+# Important keywords for scoring
+# Articles containing these words get higher scores
+keywords:
+  important:
+    - breaking        # Add keywords that indicate important news
+    - urgent          # Add your own keywords based on what you consider important
+    - exclusive       # Example: 'technology', 'politics', 'economy'
+    - update
+    - poland
+    - official
+    - announcement
+    - critical
+    - emergency
+    - latest
+    # Add more keywords as needed
+
+# Trusted news sources
+# Articles from these domains get higher reliability scores
+reliable_sources:
+  - polskieradio.pl   # Add or remove sources based on your trust
+  - notesfrompoland.com        # Use only domain names, not full URLs
+
+  # Add more trusted sources as needed
+
+# Scoring thresholds
+# Controls which articles are included in the final analysis
+thresholds:
+  min_total_score: 0.1    # Minimum score required to include an article
+                          # Increase this to be more selective
+                          # Decrease this to include more articles
+  top_candidates: 20      # Number of highest-scoring articles to consider
+                          # Increase this for more variety
+                          # Decrease this to focus on top stories only
+
+# Categories for news classification and scoring
+categories:
+  politics:
+    keywords:
+      - government
+      - election
+      - parliament
+      - policy
+      - minister
+      - president
+      - vote
+      - law
+      - political
+      - democracy
+      - military
+      - defense
+      - security
+      - armed forces
+      - nato
+      - alliance
+      - sejm
+      - senat
+      - konstytucja
+      - premier
+      - marszałek
+      - trybunał
+      - ustawa
+      - komisja
+      - partia
+      - koalicja
+    weight: 1.2  # Articles in this category get 20% boost
+    
+  economy:
+    keywords:
+      - economy
+      - market
+      - finance
+      - stock
+      - trade
+      - business
+      - inflation
+      - investment
+      - gdp
+      - economic
+    weight: 1.1
+    
+  technology:
+    keywords:
+      - technology
+      - innovation
+      - digital
+      - software
+      - ai
+      - cyber
+      - tech
+      - startup
+      - internet
+      - data
+    weight: 1.0
+    
+  society:
+    keywords:
+      - health
+      - education
+      - culture
+      - social
+      - community
+      - welfare
+      - public
+      - people
+      - life
+      - society
+    weight: 1.0
+
+  military:
+    keywords:
+      - military
+      - defense
+      - army
+      - war
+      - weapon
+      - security
+      - forces
+      - troops
+      - combat
+      - strategic
+    weight: 1.1
+
+# USAGE EXAMPLES:
+# 1. To focus on breaking news:
+#    - Increase weights.recency to 0.40
+#    - Decrease max_age_hours to 24
+#    - Add more breaking news keywords
+#
+# 2. To focus on detailed analysis:
+#    - Increase weights.content_length to 0.40
+#    - Increase ideal_length to 2000
+#    - Decrease weights.recency to 0.20
+#
+# 3. To focus on reliable sources:
+#    - Increase weights.source_reliability to 0.40
+#    - Add more trusted sources
+#    - Increase min_total_score to 0.2
+#
+# Remember: Weights must always total 1.0
